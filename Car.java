@@ -17,15 +17,8 @@ public class Car {
      * statement in the main() method.
      */
     public Car(int starting, int ending) {
-
-        if (starting >= 0 && ending >= 0) {
-            
             startMiles = starting;
             endMiles = ending;
-        } else {
-            LogManager.Warn("Starting odometer values cannot equal 0!");
-        }
-
     }
 
 

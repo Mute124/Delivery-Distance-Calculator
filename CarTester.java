@@ -16,68 +16,58 @@
 // Importing everything to make things easier. 
 import java.util.*;
 
-// Note : With all due respect ma'am, Alot of this code is incredibly unsafe and simply terrible. Nothing against you as I write code according to alot of NASA's standard practice.
-// The comments at the end are what I am refering to, they also contian the guidelines I follow aswell.
 public class CarTester
 {
+    
+    public static String newLine = "\n";
     public static void main(String[] args)
     {
         // User input variable
         Scanner usrInputScanner = new Scanner(System.in);   
         
-        // NOTE : This is not good practice but I would like to ask why we 
-        // are doing this anyways? This can be simply put as a char.
+        LogManager logman = new LogManager();
+        
+        // NOTE : Respectfully this is like using a poster for a small note. In my opinion I think having a bool and this being a char would suffice
+        // 
         String again = "y";
 
-   
-
-        int beginingOdometer = 0;
+        // slightly changed wording from the example
+        int beginningOdometer = 0;
         int endingOdometer = 0;
 
-        
-
         // NOTE: If user inputs anything besides y, the program will close.
-        // Why are we using again as a bool. It is inefficient.
         while(again.equals("y")) {
 
             //  Get required data about the car.
-            // Inputting anything other than a number crashed the program. this is here to prevent that.
-            try {
-                LogManager.Question("What is the starting odometer reading?");
-                beginingOdometer = usrInputScanner.nextInt();
-            } catch (Exception e) {
-                LogManager.Warn("Please input a number!!");
+            // WARNING : This is dangerous code! anything other than an integer will crash the program, respectfully, this is really bad practice and should never be done in this way.
+            logman.Question("What is the starting odometer reading?");
+            beginningOdometer = usrInputScanner.nextInt();
+
+            logman.Question("What is the ending odometer reading?");
+            endingOdometer = usrInputScanner.nextInt();
+            
+            while (endingOdometer <= beginningOdometer) {
+                // Changed this aswell. There is no need to call the functions 3 times. that is what the \n operator is for!
+                logman.Warn("\nEnding Odometer reading must be greater than beginning odometer reading!");
                 
-                LogManager.Question("What is the starting odometer reading?");
-                beginingOdometer = usrInputScanner.nextInt();
+                logman.Log("Enter the ending Odometer reading");
+                
+                endingOdometer = usrInputScanner.nextInt();
             }
             
-            try {
-                LogManager.Question("What is the ending odometer reading?");
-                endingOdometer = usrInputScanner.nextInt();
-
-           
-            } catch (Exception e) {
-                LogManager.Warn("Please input a number!!");
-                
-                LogManager.Question("What is the ending odometer reading?");
-                endingOdometer = usrInputScanner.nextInt();
-
-
-                // TODO: handle exception
-            }
-
-            Car car = new Car(beginingOdometer, endingOdometer);
+            // Couldnt those parameters be in the class itself?
+            Car car = new Car(beginningOdometer, endingOdometer);
             
-            LogManager.LogBland("Distance driven: " + car.getDistance());
+            // log the distance. Converts the int to a string.
+            logman.Log("Distance driven: " + car.getDistance());
 
-            LogManager.Question("calculate another trip?");
+            logman.Question("calculate another trip?");
 
-            // this can be in one line rather than two.
+            // this can be in one line rather than two. I changed it as it is both more readable, less code, and more efficient.
             again = usrInputScanner.next().toLowerCase(); 
 
-            // log a new line as bland
-            LogManager.NewBlandLine();
+            // log a new line blandly
+            logman.NewBlandLine();
         }
 
         // NOTE : This prevents a resource leak.
@@ -86,40 +76,37 @@ public class CarTester
     
     // Console Logging Functionality, Added to aid in debugging and making it look nice.
 // Made for the Do not repeat yourself rule of coding. Most of my programs have some version of this.
-public class LogManager {
-        // Here because of my coding procedures. Just ask me and I can send you my coding procedures. (Most of it actually is NASA's)
-    // Holds the \n string operator thing (I dont know what it is called).
-    public static String newLine = "\n";
+public static class LogManager {
     
     // Log with no formatting. Hence it is a Bland Log.
-    public static void LogBland(String msg) {
+    public void LogBland(String msg) {
         System.out.println(msg);
     }
     
-    public static void NewBlandLine() {
+    public void NewBlandLine() {
         LogBland(newLine);
     }
     
 
     // Log an error.
-    public static void Error(String file, String msg) {
+    public void Error(String file, String msg) {
         java.util.Date d = new java.util.Date();
         System.out.println( "[Error at " + file + "] {" + java.text.SimpleDateFormat.getDateTimeInstance().format(d) + "} : " + " " + msg);
     }
     // Send out a warning.
-    public static void Warn(String msg) {
+    public void Warn(String msg) {
         java.util.Date d = new java.util.Date();
         System.out.println( "[Warning] {" + java.text.SimpleDateFormat.getDateTimeInstance().format(d) + "} : " + " " + msg);
     }
 
     // Take the current time, format it into 12 hour clock, and log the message
-    public static void Log(String msg) {
+    public void Log(String msg) {
         java.util.Date d = new java.util.Date();
         System.out.println( "[Info] {" + java.text.SimpleDateFormat.getDateTimeInstance().format(d) + "} : " + " " + msg);
     }
 
     // User input.
-    public static void Question(String msg) {
+    public void Question(String msg) {
         java.util.Date d = new java.util.Date();
         System.out.println( "[User Input] {" + java.text.SimpleDateFormat.getDateTimeInstance().format(d) + "} : " + " " + msg);
 
@@ -127,53 +114,3 @@ public class LogManager {
 }
 
 }
-
-
-
-/*
- * Nasa's Code practices : 
- * 
-    Avoid complex flow constructs, such as goto and recursion.
-    
-    All loops must have fixed bounds. This prevents runaway code.
-    
-    Avoid heap memory allocation.
-    
-    Restrict functions to a single printed page.
-    
-    Use a minimum of two runtime assertions per function.
-    
-    Restrict the scope of data to the smallest possible.
-    
-    Check the return value of all non-void functions, or cast to void to indicate the return value is useless.
-    
-    Use the preprocessor sparingly.
-    
-    Limit pointer use to a single dereference, and do not use function pointers.
-    
-    Compile with all possible warnings active; all warnings should then be addressed before release of the software.
-
-    On top of all that I add the rules of : 
-
-    Do not repeat code, for example, line 62. It was able to be put all in ONE line reducing function calls.
-
-    Always, and I mean always, design systems, and or functions as if they have zero information. This prevents scope creep, all over the place code, etc
-    
-    Always design the program to be modular, easy to read (Dont do that prefix bullcrap that alot of libraries use), reuseable, and expandable. 
-    this allows the program to be able to grow with ease and not have to refactor everything. 
-
-    Do not comment code, radical I know. But think about it, if you force yourself to not write comments you force yourself to write good code,
-    code that anyone can understand. it also saves time!
-
-    The code should be broad, not specific to any architecture or OS. 
-
-    The code should be short, but also at the same time powerful! (This is where modularibility is important)
-
-    Maintain a common format.
-
-    Simplicity is always better than complexity! (always)
-
-    Following these rules are the reason that my game engine can run at 2000-3000 frames a second on most devices. Remember, planning for everything reduces debugging! 
- *  
- * 
- */
