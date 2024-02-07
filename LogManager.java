@@ -1,6 +1,9 @@
 // Console Logging Functionality, Added to aid in debugging and making it look nice.
 // Made for the Do not repeat yourself rule of coding. Most of my programs have some version of this.
 public class LogManager {
+        // Here because of my coding procedures. Just ask me and I can send you my coding procedures. (Most of it actually is NASA's)
+    // Holds the \n string operator thing (I dont know what it is called).
+    public static String newLine = "\n";
     
     // Log with no formatting. Hence it is a Bland Log.
     public static void LogBland(String msg) {
